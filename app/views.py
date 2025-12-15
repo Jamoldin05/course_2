@@ -24,3 +24,10 @@ class CourseDetailView(DetailView):
     context_object_name = "course"
     slug_field = "slug"
     slug_url_kwarg = "slug"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['related_courses'] = Course.objects.filter(
+            subject=self.object.subject
+        ).exclude(id=self.object.id)[:6] 
+        return context
