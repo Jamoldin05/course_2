@@ -1,13 +1,26 @@
-from django.shortcuts import render
-from .models import Subject,Course
+from django.views.generic import ListView,DetailView
+from .models import Course, Subject
 
 
-def index(request):
-    subjects = Subject.objects.all()
-    courses = Course.objects.all()
 
-    context = {
-        'subjects' : subjects,
-        'courses' : courses
-    }
-    return render(request,'app/index.html',context)
+class IndexView(ListView):
+    model = Course
+    template_name = "app/index.html"
+    context_object_name = "courses"
+
+    def get_queryset(self):
+        return Course.objects.select_related('subject', 'owner')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['subjects'] = Subject.objects.all()
+        return context
+
+
+
+class CourseDetailView(DetailView):
+    model = Course
+    template_name = "app/detail.html"
+    context_object_name = "course"
+    slug_field = "slug"
+    slug_url_kwarg = "slug"

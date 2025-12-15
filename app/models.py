@@ -39,6 +39,12 @@ class Subject(models.Model):
 class Course(models.Model):
     owner = models.ForeignKey(Teacher,related_name='courses',on_delete=models.SET_NULL,null=True)
     subject = models.ForeignKey(Subject,related_name='courses',on_delete=models.CASCADE)
+    image = models.ImageField(
+        upload_to='courses/',
+        null=True,
+        blank=True,
+        default='courses/courses-1.jpg')    
+    
     title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200,unique=True)
     overview = models.TextField(null=True,blank=True)
